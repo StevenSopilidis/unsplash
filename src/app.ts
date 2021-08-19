@@ -11,7 +11,8 @@ const app = express();
 app.use(json());
 app.use(cookieSession({
     httpOnly: true,
-    secure: process.env.NODE_ENVIRONMENT === "productin",
+    secure: process.env.NODE_ENVIRONMENT === "production",
+    signed: false
 }));
 
 app.use(AuthRoutes);
