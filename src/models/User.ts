@@ -13,7 +13,7 @@ export interface IUserAttrs
 interface IUserModel extends mongoose.Model<IUserDoc>
 {
     build(attrs: IUserAttrs) : IUserDoc;
-    validatePassowrd(providedPassword: string, hash: string): Promise<boolean>;
+    validateUsersPassoword(providedPassword: string, hash: string): Promise<boolean>;
 };
 
 interface IUserDoc extends mongoose.Document
@@ -71,7 +71,7 @@ userSchema.statics.build = ( attrs : IUserAttrs) => {
     return new User(attrs);
 }
 
-userSchema.statics.validateUserPassoword = async function(providedPassword: string, hash: string) 
+userSchema.statics.validateUsersPassoword = async function(providedPassword: string, hash: string) 
 : Promise<boolean>
 {
     return await compare(providedPassword, hash);

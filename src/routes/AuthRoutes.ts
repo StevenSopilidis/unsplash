@@ -59,9 +59,10 @@ router.post("/api/auth/signin",
 validateRequest,
 async (req: Request, res: Response) => {
     const { Email, Password } = req.body;
-    const user = await User.findOne({ Email });
-    if(!user || !await User.validatePassowrd(Password, user.Password))
-        throw new BadRequestError("Invaldi Email or Password");
+    const user = await User.findOne({Email: Email});
+
+    if(!user || !await User.validateUsersPassoword(Password, user.Password))
+        throw new BadRequestError("Invalid Email or Password");
     const jwt = CreateJwt({
         username: user.Username,
         id: user._id
