@@ -2,7 +2,7 @@ import { BaseError, ErrorObject } from "./BaseError";
 
 export class NotFoundEror extends BaseError
 {
-    statusCode = 400;
+    statusCode = 404;
     constructor()
     {
         super("Resource trying to access does not exist");

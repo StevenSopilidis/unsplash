@@ -9,7 +9,7 @@ import { CreateJwt } from "../Utils/Jwt";
 const router = Router();
 
 //route for signing up
-router.post("api/auth/signup", 
+router.post("/api/auth/signup", 
 [
     body("Username")
         .trim()
@@ -36,10 +36,9 @@ router.post("api/auth/signup",
 validateRequest,
 async (req: Request, res: Response) => {
     const { Username, Email, Password, Country, City } = req.body;
-
-    const user = await User.findOne({
-        $or: [{Usernane: Username}, {Email: Email}]
-    });
+    const user = await User.findOne( 
+        { $or: [ { Email: Email }, { Username: Username } ] } 
+    );
     if(user)
         throw new BadRequestError("Email or Usernamne is already used by another user");
     const newUser = User.build({Username,Email, Password, Country, City});
@@ -47,7 +46,7 @@ async (req: Request, res: Response) => {
     res.status(201).send(newUser);
 })
 
-router.post("api/auth/signin", 
+router.post("/api/auth/signin", 
 [
     body("Email")
         .isEmail()

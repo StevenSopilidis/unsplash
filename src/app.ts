@@ -16,9 +16,11 @@ app.use(cookieSession({
 }));
 
 app.use(AuthRoutes);
-app.use("*", (req: Request, Res: Response) => {
+
+app.all("*", (req: Request, Res: Response) => {
     throw new NotFoundEror();
 });
+
 app.use(ErrorHandler);
 
 export {app};

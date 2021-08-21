@@ -31,7 +31,7 @@ const start = async () => {
         }
 
         app.listen(port, () => {
-            console.log("listening to port 3000");
+            console.log(`listening to port ${port}`);
         });
     }else{
         throw new Error("Database paassword was not defined");

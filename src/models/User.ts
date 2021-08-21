@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { hash, compare } from "bcryptjs"
 
-interface IUserAttrs
+export interface IUserAttrs
 {
     Username: string;
     Email: string;
@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema(
         toJSON: {
             transform(doc, ret)
             {
-                delete doc.Passowrd;
+                delete ret.Passowrd;
             }
         }
     }
