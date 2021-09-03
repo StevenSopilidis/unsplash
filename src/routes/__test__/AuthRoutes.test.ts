@@ -4,7 +4,7 @@ import { getParsedCommandLineOfConfigFile } from "typescript";
 import { app } from "../../app";
 import { IUserAttrs } from "../../models/User";
 
-const signUp = async (data : IUserAttrs, expectedStatusCode : number) : Promise<Response> => {
+export const signUp = async (data : IUserAttrs, expectedStatusCode : number) : Promise<Response> => {
     return await request(app)
         .post("/api/auth/signup")
         .send(data)

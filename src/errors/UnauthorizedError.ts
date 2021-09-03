@@ -6,7 +6,7 @@ export class UnauthorizedError extends BaseError
     constructor()
     {
         super("Not authorized");
-        Object.setPrototypeOf(this, UnauthorizedError);
+        Object.setPrototypeOf(this, UnauthorizedError.prototype);
     }
     
     serializeErrors(): ErrorObject[] {

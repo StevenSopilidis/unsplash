@@ -5,10 +5,14 @@ import { json } from "body-parser";
 import { ErrorHandler } from "./middleware/ErrorHandler";
 import { AuthRoutes } from "./routes/AuthRoutes";
 import { NotFoundEror } from "./errors/NotFoundError";
+import { UploadImageRoutes } from "./routes/UploadImageRoutes";
+import upload from "express-fileupload";
 
 const app = express();
 
 app.use(json());
+app.use(upload());
+
 app.use(cookieSession({
     httpOnly: true,
     secure: process.env.NODE_ENVIRONMENT === "production",
@@ -16,6 +20,7 @@ app.use(cookieSession({
 }));
 
 app.use(AuthRoutes);
+app.use(UploadImageRoutes);
 
 app.all("*", (req: Request, Res: Response) => {
     throw new NotFoundEror();
