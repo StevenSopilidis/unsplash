@@ -16,7 +16,7 @@ interface IUserModel extends mongoose.Model<IUserDoc>
     validateUsersPassoword(providedPassword: string, hash: string): Promise<boolean>;
 };
 
-interface IUserDoc extends mongoose.Document
+export interface IUserDoc extends mongoose.Document
 {
     Username: string;
     Email: string;

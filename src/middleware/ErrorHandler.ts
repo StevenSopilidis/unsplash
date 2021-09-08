@@ -9,13 +9,6 @@ export const ErrorHandler = (
 ) => {
     if(err instanceof BaseError)
     {
-        if (process.env.NODE_ENVIRONMENT="development")
-        {
-            return res.status(err.statusCode).send({ 
-                error: err.serializeErrors(),
-                stackTrace: err.stack
-            });
-        }
         return res.status(err.statusCode).send({
             error: err.serializeErrors()
         });
