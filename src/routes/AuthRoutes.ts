@@ -2,7 +2,7 @@ import { app } from "../app";
 import { Router, Request, Response } from "express";
 import { validateRequest } from "../middleware/ValidateRequest";
 import { body } from "express-validator";
-import { User } from "../models/User";
+import { SubscriptionStorageAmmount, User } from "../models/User";
 import { BadRequestError } from "../errors/BadRequestError";
 import { CreateJwt } from "../Utils/Jwt";
 

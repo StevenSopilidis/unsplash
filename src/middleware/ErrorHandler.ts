@@ -13,7 +13,7 @@ export const ErrorHandler = (
             error: err.serializeErrors()
         });
     };
-
+    console.log(err.message);
     if (process.env.NODE_ENVIRONMENT="development")
     {
         return res.status(500).send({

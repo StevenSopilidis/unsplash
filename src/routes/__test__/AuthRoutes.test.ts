@@ -3,6 +3,7 @@ import request, { Response } from "supertest";
 import { getParsedCommandLineOfConfigFile } from "typescript";
 import { app } from "../../app";
 import { IUserAttrs } from "../../models/User";
+import { SubscriptionStorageAmmount } from "../../models/User";
 
 export const signUp = async (data : IUserAttrs, expectedStatusCode : number) : Promise<Response> => {
     return await request(app)
@@ -118,4 +119,18 @@ it("returns 200 when user signsIn successfully", async () => {
     const res = await signIn(data.Email, data.Password, 200);
     //check if the cookie for the jwt was set successfully
     expect(res.get("Set-Cookie")).toBeDefined();
+});
+
+it("Makes sure that the storage left to newly created user === DefaultTierStorage", 
+async () =>
+{
+    const data : IUserAttrs = {
+        Username: "Stefanos123",
+        Email: "ste@gmail.com",
+        Password: "test324235r",
+        Country: "France",
+        City: "Paris"
+    };
+    const result = await signUp(data, 201);
+    expect(result.body.StorageLeft).toEqual(SubscriptionStorageAmmount.DefaultTierStorage);
 });

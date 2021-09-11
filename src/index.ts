@@ -33,14 +33,14 @@ const start = async () => {
 
         //configure cloudianary
         if(!process.env.CLOUDINARY_CLOUD_NAME)
-            throw new Error("Please define CLOUDINARY_CLOUD_NAME in environment variables");
+            throw new Error("Please define CLOUDINARY_CLOUD_NAME in environment variable");
         
         if(!process.env.CLOUDINARY_API_KEY)
-            throw new Error("Please define CLOUDINARY_API_KEY in environment variables");
+            throw new Error("Please define CLOUDINARY_API_KEY in environment variable");
         
         if(!process.env.CLOUDINARY_API_SECRET)
-            throw new Error("Please define CLOYDINARY_API_SECRET in environment variables");
-        
+            throw new Error("Please define CLOYDINARY_API_SECRET in environment variable");
+
         cloudinary.config({
             cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
             api_key: process.env.CLOUDINARY_API_KEY,
