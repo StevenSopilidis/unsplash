@@ -28,6 +28,8 @@ current_user: IUserDoc): Promise<void> => {
                     User: current_user
                 });
                 await photo.save();
+                current_user.StorageLeft -= image.size / parseInt(process.env.BYTES_IN_GIGABYTE!);
+                await current_user.save();
                 resolve();
             }
         });
@@ -38,3 +40,10 @@ current_user: IUserDoc): Promise<void> => {
         readable.pipe(stream);
     })
 };
+
+export const UserHasEnoughStorageLeft = 
+(current_user : IUserDoc, data_size: number) : boolean => {
+    const storage_left_in_bytes = current_user.StorageLeft * parseInt(process.env.BYTES_IN_GIGABYTE!);
+    console.log(storage_left_in_bytes + " " + data_size);
+    return storage_left_in_bytes - data_size >= 0;
+}
