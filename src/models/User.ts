@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { hash, compare } from "bcryptjs"
 
 //tiers for montly subscription
-enum SubscriptionTier
+export enum SubscriptionTier
 {
     DefaulyTier="Default tier",
     Low="Low tier",
@@ -11,7 +11,7 @@ enum SubscriptionTier
 };
 
 //monthly fee of subscriptions in dollars
-enum SubscriptionMonthFee
+export enum SubscriptionMonthFee
 {
     DefaultTierFee=0,
     LowTierFee=5,
@@ -49,7 +49,7 @@ export interface IUserDoc extends mongoose.Document
     Username: string;
     Email: string;
     Password: string;
-    County: string;
+    Country: string;
     City: string;
     UserTier: SubscriptionTier;
     StorageLeft: SubscriptionStorageAmmount

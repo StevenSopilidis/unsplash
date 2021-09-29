@@ -65,7 +65,8 @@ async (req: Request, res: Response) => {
         throw new BadRequestError("Invalid Email or Password");
     const jwt = CreateJwt({
         username: user.Username,
-        id: user._id
+        id: user._id,
+        tier: user.UserTier
     });
     req.session = {
         jwt

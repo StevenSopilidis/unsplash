@@ -5,7 +5,7 @@ let mongo: MongoMemoryServer;
 
 beforeAll(async () => {``
     process.env.JWT_KEY = "randomJWTKEYfortesting23342";
-    process.env.NODE_ENVIRONMENT = "development";
+    process.env.NODE_ENV = "development";
 
     mongo = await MongoMemoryServer.create();
     await mongoose.connect(mongo.getUri(), {

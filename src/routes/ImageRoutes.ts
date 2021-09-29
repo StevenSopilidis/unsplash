@@ -1,19 +1,28 @@
 import { Request, Response, Router } from "express";
-import { isValidObjectId } from "mongoose";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundEror } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
 import { Require_Auth } from "../middleware/Require_Auth";
-import { Photo } from "../models/Photo";
+import { validateRequest } from "../middleware/ValidateRequest";
+import { IPhotoDoc, IPhotoReturnedUser, Photo } from "../models/Photo";
 import { User } from "../models/User";
 import { UploadImage, UserHasEnoughStorageLeft } from "../Utils/FileUploader";
+import { body } from "express-validator";
+import { PaginationParams } from "../Utils/PaginationParams";
 
 const router = Router();
 
 router.post("/api/images/upload", 
 Require_Auth,
+[
+    body("label")
+        .isLength({min: 5, max: 300})
+        .withMessage("Label must be between 5 and 300 characters")
+],
+validateRequest,
 async (req: Request, res: Response) => {
     const uploaded = req.files?.image;
+    const { label } = req.body;
     if(!uploaded)
         throw new BadRequestError("Please provide the image you want to upload");
     //get the current User
@@ -43,7 +52,7 @@ async (req: Request, res: Response) => {
         uploaded.forEach(async image => {
             try
             {
-                const result = await UploadImage(image, current_user);
+                const result = await UploadImage(image,label, current_user);
             }
             catch(err)
             {
@@ -61,7 +70,7 @@ async (req: Request, res: Response) => {
             if(!UserHasEnoughStorageLeft(current_user, uploaded.size))
                 throw new BadRequestError("Not enough space in your profile to upload image.If you wish to upload this image level up your tier");
             
-            const result = await UploadImage(uploaded, current_user);
+            const result = await UploadImage(uploaded,label, current_user);
         }
         catch(err)
         {
@@ -84,4 +93,43 @@ router.get("/api/images/:imageId", async (req: Request, res: Response) => {
     res.status(200).send(photo);
 });
 
-export { router as UploadImageRoutes };
+router.get("/api/images", async (req: Request, res: Response) => {
+    const { currentPage, pageSize } = req.query;
+    
+    const paginationParams = new PaginationParams(currentPage?.toString(), pageSize?.toString());
+
+    const images = await Photo
+        .find()
+        .populate({
+            path: "User",
+            select: "Username Email Country City"
+        })
+        .limit(paginationParams.pageSize)
+        .skip((paginationParams.currentPage - 1) * paginationParams.pageSize)
+        .sort("-Uploaded");
+
+    res.status(200).send(images);
+});
+
+//route to get images of a certain user
+router.get("/api/images/user/:userId", async ( req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    //check if the user with userId exists
+    const user = await User.findById(userId);
+    if(!user)
+        throw new BadRequestError(`User with id: ${userId} does not exist`);
+
+    const photos = await Photo
+        .find({User: {
+            _id: user._id,
+            Username: user.Username,
+            Email: user.Email,
+            Country: user.Country,
+            City: user.City
+        }});
+    
+    res.status(200).send(photos);
+})
+
+export { router as ImageRoutes };

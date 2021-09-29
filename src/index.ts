@@ -6,7 +6,7 @@ import { v2 as cloudinary} from "cloudinary";
 
 dotenv.config({ path: "src/config.env"});
 
-const port: number = process.env.PORT? parseInt(process.env.PORT) : 3000;
+const port: number = process.env.PORT? parseInt(process.env.PORT) : 5000;
 
 const start = async () => {
     if(process.env.CONNECTION_STRING)
@@ -45,7 +45,7 @@ const start = async () => {
             cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
             api_key: process.env.CLOUDINARY_API_KEY,
             api_secret: process.env.CLOUDINARY_API_SECRET,
-            secure: process.env.NODE_ENVIRONMENT === "production"
+            secure: process.env.NODE_ENV === "production"
         });
 
         app.listen(port, () => {

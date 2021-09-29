@@ -9,6 +9,7 @@ import { IUserDoc } from "../models/User";
 
 export const UploadImage = async (
 image : fileUpload.UploadedFile, 
+label: string,
 current_user: IUserDoc): Promise<void> => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(async (err, result) => {
@@ -25,7 +26,8 @@ current_user: IUserDoc): Promise<void> => {
                 const photo = Photo.build({
                     PublicId: result.public_id,
                     Url: result.secure_url,
-                    User: current_user
+                    User: current_user,
+                    Label: label
                 });
                 await photo.save();
                 current_user.StorageLeft -= image.size / parseInt(process.env.BYTES_IN_GIGABYTE!);

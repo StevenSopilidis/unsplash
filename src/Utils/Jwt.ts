@@ -1,8 +1,10 @@
 import { sign } from "jsonwebtoken";
+import { SubscriptionTier } from "../models/User";
 
 export type JwtAttrs = {
     username: string;
     id: string;
+    tier: SubscriptionTier;
 }
 
 const JWT_DAYS_LAST = 7;

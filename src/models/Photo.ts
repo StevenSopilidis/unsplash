@@ -6,6 +6,7 @@ interface IPhotoAttrs
     PublicId: string,
     Url: string;
     User: IUserDoc;
+    Label: string;
 }
 
 interface IPhotoModel extends mongoose.Model<IPhotoDoc>
@@ -14,19 +15,23 @@ interface IPhotoModel extends mongoose.Model<IPhotoDoc>
 }
 
 //returned user when quering for photo
-interface IPhotoReturnedUser
+export interface IPhotoReturnedUser
 {
+    _id: string;
     Username: string;
+    Email: string;
     Country: string;
     City: string;
 }
 
 
-interface IPhotoDoc extends mongoose.Document
+export interface IPhotoDoc extends mongoose.Document
 {
     PublicId: string;
     Url: string;
     User: IPhotoReturnedUser;
+    Label: string;
+    Uploaded: Date;
 };
 
 const photoSchema = new mongoose.Schema({
@@ -42,19 +47,27 @@ const photoSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "User",
         required: true        
+    },
+    Label: {
+        type: String,
+        required: true
+    },
+    Uploaded: {
+        type: Date,
+        default: Date.now
     }
 });
 
-photoSchema.pre<IPhotoDoc>(/^find/, async function(next){
-    this.populate({
-        path: "User",
-        select: "Username Country City"
-    });
-})
+// photoSchema.pre<IPhotoDoc>(/^find/, async function(next){
+//     this.populate({
+//         path: "User",
+//         select: "Username Email Country City"
+//     });
+// });
 
 photoSchema.statics.build = (attrs: IPhotoAttrs) => {
     return new Photo(attrs);
-}
+};
 
 const Photo = mongoose.model<IPhotoDoc, IPhotoModel>("Photo", photoSchema);
 
