@@ -4,7 +4,7 @@ import fs from "fs";
 import { Readable } from "stream";
 import { Result } from "express-validator";
 import mongoose from "mongoose";
-import { Photo } from "../models/Photo";
+import { IPhotoDoc, Photo } from "../models/Photo";
 import { IUserDoc } from "../models/User";
 
 export const UploadImage = async (
@@ -27,7 +27,8 @@ current_user: IUserDoc): Promise<void> => {
                     PublicId: result.public_id,
                     Url: result.secure_url,
                     User: current_user,
-                    Label: label
+                    Label: label,
+                    Size: image.size
                 });
                 await photo.save();
                 current_user.StorageLeft -= image.size / parseInt(process.env.BYTES_IN_GIGABYTE!);
@@ -48,4 +49,22 @@ export const UserHasEnoughStorageLeft =
     const storage_left_in_bytes = current_user.StorageLeft * parseInt(process.env.BYTES_IN_GIGABYTE!);
     console.log(storage_left_in_bytes + " " + data_size);
     return storage_left_in_bytes - data_size >= 0;
+};
+
+export const DeletePhoto = async ( photo : IPhotoDoc, user: IUserDoc) : Promise<void> => {
+    try {
+        const result = await cloudinary.uploader.destroy(photo.PublicId);
+    } catch (error) {
+        throw new Error("Image could not been deleted");
+    }
+    await photo.delete();
+    // //update the storage left of the user
+    
+    user.StorageLeft += photo.Size;
+    await user.save();
 }
+
+
+
+
+

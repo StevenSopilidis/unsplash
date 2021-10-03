@@ -7,6 +7,7 @@ interface IPhotoAttrs
     Url: string;
     User: IUserDoc;
     Label: string;
+    Size: number;
 }
 
 interface IPhotoModel extends mongoose.Model<IPhotoDoc>
@@ -32,6 +33,7 @@ export interface IPhotoDoc extends mongoose.Document
     User: IPhotoReturnedUser;
     Label: string;
     Uploaded: Date;
+    Size: number;
 };
 
 const photoSchema = new mongoose.Schema({
@@ -55,6 +57,9 @@ const photoSchema = new mongoose.Schema({
     Uploaded: {
         type: Date,
         default: Date.now
+    },
+    Size: {
+        type: Number,
     }
 });
 

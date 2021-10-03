@@ -6,7 +6,7 @@ import { Require_Auth } from "../middleware/Require_Auth";
 import { validateRequest } from "../middleware/ValidateRequest";
 import { IPhotoDoc, IPhotoReturnedUser, Photo } from "../models/Photo";
 import { User } from "../models/User";
-import { UploadImage, UserHasEnoughStorageLeft } from "../Utils/FileUploader";
+import { DeletePhoto, UploadImage, UserHasEnoughStorageLeft } from "../Utils/FileUploader";
 import { body } from "express-validator";
 import { PaginationParams } from "../Utils/PaginationParams";
 
@@ -85,8 +85,12 @@ async (req: Request, res: Response) => {
 router.get("/api/images/:imageId", async (req: Request, res: Response) => {
     const { imageId } = req.params;
     
-    //!check if the user provided valid mongo id
-    const photo = await Photo.findById(imageId);
+    const photo = await Photo
+        .findById(imageId)
+        .populate({
+            path: "User",
+            select: "Username Email Country City"
+        });
     if(!photo)
         throw new NotFoundEror();
     
@@ -126,10 +130,37 @@ router.get("/api/images/user/:userId", async ( req: Request, res: Response) => {
             Username: user.Username,
             Email: user.Email,
             Country: user.Country,
-            City: user.City
-        }});
+            City: user.City,
+        }})
+        .populate({
+            path: "User",
+            select: "Username Email Country City"
+        });
     
     res.status(200).send(photos);
 })
+
+router.delete("/api/images/:photoId", 
+Require_Auth,
+async (req: Request, res: Response) => {
+    const { photoId } = req.params;
+    const photo = await Photo
+        .findById(photoId)
+        .populate({
+            path: "User",
+            select: "Username Email Country City"
+        });
+
+    if(!photo)
+        throw new NotFoundEror();
+    //check if the user actuall owns the photo he/she tries to delete
+    const currentUser = await User.findById(req.currentUser?.id);
+    
+    if(!currentUser || currentUser._id != photo.User._id.toString())
+        throw new UnauthorizedError();
+
+    await DeletePhoto(photo, currentUser);
+    res.status(204).send();
+});
 
 export { router as ImageRoutes };

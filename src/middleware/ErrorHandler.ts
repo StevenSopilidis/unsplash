@@ -7,6 +7,7 @@ export const ErrorHandler = (
     res: Response,
     next: NextFunction
 ) => {
+    console.log(err);
     if(err instanceof BaseError)
     {
         return res.status(err.statusCode).send({
