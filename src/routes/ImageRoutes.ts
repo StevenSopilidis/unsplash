@@ -116,13 +116,13 @@ router.get("/api/images", async (req: Request, res: Response) => {
 });
 
 //route to get images of a certain user
-router.get("/api/images/user/:userId", async ( req: Request, res: Response) => {
-    const { userId } = req.params;
+router.get("/api/images/user/:username", async ( req: Request, res: Response) => {
+    const { username } = req.params;
 
     //check if the user with userId exists
-    const user = await User.findById(userId);
+    const user = await User.findOne({ Username: username });
     if(!user)
-        throw new BadRequestError(`User with id: ${userId} does not exist`);
+        throw new BadRequestError(`User with username: ${username} does not exist`);
 
     const photos = await Photo
         .find({User: {

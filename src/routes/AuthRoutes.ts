@@ -5,6 +5,8 @@ import { body } from "express-validator";
 import { SubscriptionStorageAmmount, User } from "../models/User";
 import { BadRequestError } from "../errors/BadRequestError";
 import { CreateJwt } from "../Utils/Jwt";
+import { Require_Auth } from "../middleware/Require_Auth";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
 
 const router = Router();
 
@@ -73,5 +75,17 @@ async (req: Request, res: Response) => {
     };
     res.status(200).send(user);
 })
+
+router.get("/api/auth/currentuser", 
+Require_Auth,
+async (req: Request, res: Response) => {
+    const userId = req.currentUser?.id;
+    let user;
+    if(!userId || !(user = await User.findById(userId)))
+        throw new UnauthorizedError();
+
+    res.status(200).send(user);
+});
+
 
 export { router as AuthRoutes };

@@ -26,7 +26,7 @@ export enum SubscriptionStorageAmmount
     LowTierStorage= 7,
     MediumTierStorage=15,
     HighTierStorage=30 
-} 
+}
 
 
 export interface IUserAttrs
