@@ -4,14 +4,14 @@ import { hash, compare } from "bcryptjs"
 //tiers for montly subscription
 export enum SubscriptionTier
 {
-    DefaulyTier="Default tier",
-    Low="Low tier",
-    Medium="Medium tier",
-    High="High tier",
+    DefaultTier="DefaultTier",
+    LowTier="LowTier",
+    MediumTier="MediumTier",
+    HighTier="HighTier",
 };
 
-//monthly fee of subscriptions in dollars
-export enum SubscriptionMonthFee
+//price to purchase a subscription in dollars
+export enum SubscriptionFee
 {
     DefaultTierFee=0,
     LowTierFee=5,
@@ -28,6 +28,32 @@ export enum SubscriptionStorageAmmount
     HighTierStorage=30 
 }
 
+export const getTierPrice = (tier: string) : number => {
+    switch (tier) {
+        case "LowTier":
+            return SubscriptionFee.LowTierFee;
+        case "MediumTier":
+            return SubscriptionFee.MediumTierFee;
+        case "HighTier":
+            return SubscriptionFee.HighTierFee;
+        default:
+            return SubscriptionFee.DefaultTierFee;
+    }
+}
+
+//func to determine the value of each tier
+export const getTierValue = (tier: string) => {
+    switch (tier) {
+        case "LowTier":
+            return 1;
+        case "MediumTier":
+            return 2;
+        case "HighTier":
+            return 3;
+        default:
+            return 0;
+    }
+} 
 
 export interface IUserAttrs
 {
@@ -79,7 +105,7 @@ const userSchema = new mongoose.Schema(
         },
         UserTier: {
             type: SubscriptionTier,
-            default: SubscriptionTier.DefaulyTier
+            default: SubscriptionTier.DefaultTier
         },
         //ammount of data left to the user to use
         StorageLeft: {

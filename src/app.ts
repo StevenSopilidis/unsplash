@@ -8,6 +8,7 @@ import { NotFoundEror } from "./errors/NotFoundError";
 import { ImageRoutes } from "./routes/ImageRoutes";
 import upload from "express-fileupload";
 import cors from "cors";
+import { SubscriptionRoutes } from "./routes/SubscriptionRoutes";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(cookieSession({
 
 app.use(AuthRoutes);
 app.use(ImageRoutes);
+app.use(SubscriptionRoutes);
 
 app.all("*", (req: Request, Res: Response) => {
     throw new NotFoundEror();

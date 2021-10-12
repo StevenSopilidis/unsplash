@@ -2,9 +2,17 @@ import { app } from "./app";
 import dotenv from "dotenv";
 import { connect } from "mongoose";
 import { v2 as cloudinary} from "cloudinary";
+import Stripe from "stripe";
 
 
 dotenv.config({ path: "src/config.env"});
+
+const secret = process.env.STRIPE_SECRET_KEY!;
+
+export const stripe = new Stripe(secret, {
+    typescript: true,    
+    apiVersion: "2020-08-27"
+});
 
 const port: number = process.env.PORT? parseInt(process.env.PORT) : 5000;
 
@@ -40,6 +48,12 @@ const start = async () => {
         
         if(!process.env.CLOUDINARY_API_SECRET)
             throw new Error("Please define CLOYDINARY_API_SECRET in environment variable");
+
+        if(!process.env.STRIPE_SECRET_KEY)
+            throw new Error("Please define STRIPE_SECRET_KEY in environment variable");
+
+        if(!process.env.STRIPE_WEBHOOK_SECRET)
+            throw new Error("Please define STRIPE_WEBHOOK_SECRET in environment variables");
 
         cloudinary.config({
             cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
